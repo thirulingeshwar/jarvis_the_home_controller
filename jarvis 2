@@ -1,0 +1,62 @@
+import speech_recognition as sr
+import pyttsx3
+import datetime
+import random
+
+# Initialize speech recognition
+r = sr.Recognizer()
+
+# Initialize text-to-speech engine
+engine = pyttsx3.init()
+
+def listen():
+    with sr.Microphone() as source:
+        print("Listening...")
+        audio = r.listen(source)
+
+    try:
+        print("Recognizing...")
+        text = r.recognize_google(audio)
+        print("User: " + text)
+        process_command(text)
+    except sr.UnknownValueError:
+        print("Sorry, I didn't understand that.")
+        respond("Sorry, I didn't understand that.")
+    except sr.RequestError:
+        print("Sorry, I couldn't process your request.")
+        respond("Sorry, I couldn't process your request.")
+
+def respond(text):
+    print("jarvis : " + text)
+    engine.say(text)
+    engine.runAndWait()
+
+def process_command(text):
+    if "hello" in text:
+        greet()
+    elif "time" in text:
+        get_time()
+    elif "your name" in text:
+        respond("My name is J.A.R.V.I.S.")
+    elif "weather" in text:
+        get_weather()
+    else:
+        respond("I'm sorry, I don't have the capability to respond to that command.")
+
+def greet():
+    responses = ["Hello, sir. How can I assist you today?", "Good day, sir. How may I be of service?"]
+    respond(random.choice(responses))
+
+def get_time():
+    now = datetime.datetime.now()
+    current_time = now.strftime("%I:%M %p")
+    respond("The current time is " + current_time)
+
+def get_weather():
+    # Implement weather retrieval logic using APIs or web scraping
+    # You will need to integrate with a weather service or API to fetch weather information
+    respond("The weather is sunny today.")
+
+# Main loop for continuous listening
+while True:
+    listen()
